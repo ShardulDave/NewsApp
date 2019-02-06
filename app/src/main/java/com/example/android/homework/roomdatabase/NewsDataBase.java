@@ -11,7 +11,7 @@ import com.example.android.homework.NewsItem;
 @Database(entities = {NewsItem.class}, version = 1)
 public abstract class NewsDataBase extends RoomDatabase {
 
-    public abstract NewsQueriesDao newsQueriesDao();
+    public abstract NewsItemDao newsQueriesDao();
 
     private static NewsDataBase INSTANCE;
 

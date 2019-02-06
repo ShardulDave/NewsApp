@@ -12,16 +12,16 @@ import java.util.List;
 
 
 @Dao
-public interface NewsQueriesDao {
+public interface NewsItemDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insertNews(List<NewsItem> newsItem);
+    void insert(List<NewsItem> newsItem);
 
     @Query("SELECT * FROM news_item")
-    List<NewsItem> getNewsData();
+    List<NewsItem> loadAllNews();
 
     @Query("DELETE FROM news_item")
-    void deleteAllData();
+    void clearrAll();
 
 
 }

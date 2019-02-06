@@ -13,15 +13,23 @@ import android.widget.Toast;
 
 import com.example.android.homework.Utility.InternetUtils;
 import com.example.android.homework.adapter.NewsAdapter;
+import com.example.android.homework.services.FireBaseJobService;
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     NewsAdapter newsItemAdapter;
-    NewsViewModel newsViewModel;
+    NewsItemViewModel newsViewModel;
     RecyclerView newsItemRecyclerView;
-    int mTIme = 0;
+    int intervals = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,17 +38,37 @@ public class MainActivity extends AppCompatActivity {
 
         defineViewsandsetAdapter();
         getNewsDataandObserveWhenLoad();
+        startFirebaseJobService();
 
     }
 
-    private void defineViewsandsetAdapter() {
-        newsItemRecyclerView = findViewById(R.id.recycler_view);
+    private void startFirebaseJobService() {
 
+        FirebaseJobDispatcher dispatcher =
+                new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
+
+        Job myJob = dispatcher.newJobBuilder()
+                .setService(FireBaseJobService.class)
+                .setLifetime(Lifetime.FOREVER)
+                .setRecurring(true)
+                .setTag("firebasejobservice")
+                .setTrigger(Trigger.executionWindow(intervals, intervals + 10))
+                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                .setReplaceCurrent(false)
+                .setConstraints(Constraint.ON_ANY_NETWORK)
+                .build();
+
+        dispatcher.mustSchedule(myJob);
+    }
+
+    private void defineViewsandsetAdapter() {
+
+        newsItemRecyclerView = findViewById(R.id.recycler_view);
         newsItemAdapter = new NewsAdapter(this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
         newsItemRecyclerView.setLayoutManager(mLayoutManager);
         newsItemRecyclerView.setAdapter(newsItemAdapter);
-        newsViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
+        newsViewModel = ViewModelProviders.of(this).get(NewsItemViewModel.class);
 
     }
 

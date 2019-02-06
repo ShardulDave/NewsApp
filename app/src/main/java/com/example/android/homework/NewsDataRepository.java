@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 import com.example.android.homework.Utility.JsonUtils;
 import com.example.android.homework.Utility.NetworkUtils;
 import com.example.android.homework.roomdatabase.NewsDataBase;
-import com.example.android.homework.roomdatabase.NewsQueriesDao;
+import com.example.android.homework.roomdatabase.NewsItemDao;
 
 import java.io.IOException;
 import java.net.URL;
@@ -17,26 +17,26 @@ import java.util.concurrent.ExecutionException;
 
 public class NewsDataRepository {
 
-    private NewsQueriesDao newsQueryDao;
+    private NewsItemDao newsItemDao;
     private NewsDataBase newsDataBase;
     Context ctx;
 
     public NewsDataRepository(Context ctx) {
         newsDataBase = NewsDataBase.getDatabase(ctx);
-        newsQueryDao = newsDataBase.newsQueriesDao();
+        newsItemDao = newsDataBase.newsQueriesDao();
         this.ctx = ctx;
     }
 
     public void getDataFromNewsApiAndSave() {
-        new getNewsApiResponse(newsQueryDao).execute();
+        new getNewsApiResponse(newsItemDao).execute();
     }
 
     public static class getNewsApiResponse extends AsyncTask<Void, Void, String> {
         String response;
-        NewsQueriesDao newsQueryDao;
+        NewsItemDao newsItemDao;
 
-        private getNewsApiResponse(NewsQueriesDao newsQueryDao) {
-            this.newsQueryDao = newsQueryDao;
+        private getNewsApiResponse(NewsItemDao newsItemDao) {
+            this.newsItemDao = newsItemDao;
         }
 
         @Override
@@ -47,8 +47,8 @@ public class NewsDataRepository {
                         (new URL(NetworkUtils.appendURL(NetworkUtils.BASEURL, NetworkUtils.APIKEY)));
 
                 if (JsonUtils.parseData(response).size() != 0) {
-                    newsQueryDao.deleteAllData();
-                    newsQueryDao.insertNews(JsonUtils.parseData(response));
+                    newsItemDao.clearrAll();
+                    newsItemDao.insert(JsonUtils.parseData(response));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -75,15 +75,15 @@ public class NewsDataRepository {
     }
 
 
-    public NewsQueriesDao getnewsQueryDao() {
-        return newsQueryDao;
+    public NewsItemDao getnewsItemDao() {
+        return newsItemDao;
     }
     private class getDataFromRoomLocalDataBase extends AsyncTask<Void, Void, MutableLiveData<List<NewsItem>>> {
 
         @Override
         protected MutableLiveData<List<NewsItem>> doInBackground(Void... voids) {
             MutableLiveData<List<NewsItem>> listMutableLiveData = new MutableLiveData<>();
-            listMutableLiveData.postValue(newsQueryDao.getNewsData());
+            listMutableLiveData.postValue(newsItemDao.loadAllNews());
             return listMutableLiveData;
         }
     }

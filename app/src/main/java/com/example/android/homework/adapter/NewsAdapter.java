@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.android.homework.NewsItem;
 import com.example.android.homework.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -60,7 +62,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsItemViewHo
         holder.newsDescription.setText("Description : " + newsItem.getDescription());
 
 
-
+        Picasso.with(context)
+                .load(newsItem.getImageUrL())
+                .resize(360, 210)
+                .into(holder.imageView);
     }
 
     @Override
@@ -72,10 +77,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsItemViewHo
 
     public class NewsItemViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout relativeLayout;
+        ImageView imageView;
         TextView newsTitle, newsDescription, newsDate;
 
         public NewsItemViewHolder(View view) {
             super(view);
+            imageView = view.findViewById(R.id.image);
             relativeLayout = view.findViewById(R.id.relativeLayout);
             newsTitle = view.findViewById(R.id.newstitle);
             newsDescription = view.findViewById(R.id.newsdesc);
