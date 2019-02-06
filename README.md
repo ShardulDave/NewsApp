@@ -1,14 +1,12 @@
-# NewsApp_1
+# NewsApp_2
 
 * An Android Application to that displays the news in a Recycler View.
 
 * The applicion fetches the data from https://newsapi.org/
 
-## Phase 1
+## Phase 2
 
-* Implemented NetworkUtils class
-* Implemented JsonUtils class
-* Implemented the MainActivity class
+* Added Room ORM, MVVM Architecture, Repository pattern
 
 ## Reference
 
