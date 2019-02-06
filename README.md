@@ -22,3 +22,5 @@
 
 * https://www.udacity.com/course/new-android-fundamentals--ud851
 
+* Refactored my orginal three repositories into one.
+
